@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block titulo %}Productos | Sistema Productos{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-white">
+        <i class="bi bi-box-seam"></i> Productos en Inventario
+    </h2>
+    <a href="{% url 'app_productos:crear_producto' %}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nuevo Producto
+    </a>
+</div>
+
+<div class="row g-4">
+    {% for producto in productos %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" class="card-img-top product-img" alt="{{ producto.nombre }}">
+            {% else %}
+                <div class="card-img-top d-flex align-items-center justify-content-center bg-light product-img">
+                    <i class="bi bi-image" style="font-size: 4rem; color: #6c757d;"></i>
+                </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ producto.nombre }}</h5>
+                <p class="card-text flex-grow-1 small">
+                    {{ producto.descripcion|truncatewords:12 }}
+                </p>
+                <div class="mb-2">
+                    <span class="badge bg-success fs-6">${{ producto.precio }}</span>
+                    {% if producto.stock > 10 %}
+                        <span class="badge bg-primary">Stock: {{ producto.stock }}</span>
+                    {% elif producto.stock > 0 %}
+                        <span class="badge bg-warning text-dark">Stock: {{ producto.stock }}</span>
+                    {% else %}
+                        <span class="badge bg-danger">Sin Stock</span>
+                    {% endif %}
+                </div>
+                <p class="card-text small text-muted">
+                    <i class="bi bi-truck"></i> {{ producto.proveedor.nombre }}
+                </p>
+                <div class="mt-auto">
+                    <a href="{% url 'app_productos:detalle_producto' producto.id %}" class="btn btn-outline-success w-100">
+                        <i class="bi bi-eye"></i> Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> No hay productos registrados.
+            <a href="{% url 'app_productos:crear_producto' %}" class="alert-link">¡Crea el primero!</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

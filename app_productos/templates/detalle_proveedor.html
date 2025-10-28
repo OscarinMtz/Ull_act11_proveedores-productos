@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ proveedor.nombre }} | Sistema Productos{% endblock %}
+
+{% block contenido %}
+<div class="row g-4">
+    <!-- Información del Proveedor -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-building"></i> Información del Proveedor
+                </h4>
+            </div>
+            <div class="card-body text-center">
+                {% if proveedor.logo %}
+                    <img src="{{ proveedor.logo.url }}" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px; object-fit: cover;" alt="Logo de {{ proveedor.nombre }}">
+                {% else %}
+                    <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center bg-light" style="width: 200px; height: 200px;">
+                        <i class="bi bi-building" style="font-size: 4rem; color: #6c757d;"></i>
+                    </div>
+                {% endif %}
+                
+                <h3>{{ proveedor.nombre }}</h3>
+                
+                <div class="text-start mt-4">
+                    <p><strong><i class="bi bi-telephone"></i> Teléfono:</strong><br>{{ proveedor.telefono }}</p>
+                    <p><strong><i class="bi bi-envelope"></i> Correo:</strong><br>{{ proveedor.correo }}</p>
+                    <p><strong><i class="bi bi-geo-alt"></i> Dirección:</strong><br>{{ proveedor.direccion }}</p>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a href="{% url 'app_productos:editar_proveedor' proveedor.id %}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Editar Proveedor
+                    </a>
+                    <a href="{% url 'app_productos:borrar_proveedor' proveedor.id %}" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar Proveedor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos del Proveedor -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-box-seam"></i> Productos de {{ proveedor.nombre }}
+                    <span class="badge bg-light text-dark ms-2">{{ proveedor.productos.count }}</span>
+                </h4>
+            </div>
+            <div class="card-body">
+                {% if proveedor.productos.all %}
+                <div class="row g-3">
+                    {% for producto in proveedor.productos.all %}
+                    <div class="col-sm-6">
+                        <div class="card h-100">
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen.url }}" class="card-img-top" style="height: 120px; object-fit: cover;" alt="{{ producto.nombre }}">
+                            {% else %}
+                                <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 120px;">
+                                    <i class="bi bi-image" style="font-size: 2rem; color: #6c757d;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="card-title">{{ producto.nombre }}</h6>
+                                <p class="card-text">
+                                    <span class="badge bg-success">${{ producto.precio }}</span>
+                                    <span class="badge bg-info text-dark">Stock: {{ producto.stock }}</span>
+                                </p>
+                                <a href="{% url 'app_productos:detalle_producto' producto.id %}" class="btn btn-sm btn-outline-primary w-100">
+                                    Ver Producto
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-box" style="font-size: 3rem; color: #6c757d;"></i>
+                    <h5 class="mt-3 text-muted">No hay productos registrados</h5>
+                    <p class="text-muted">Este proveedor no tiene productos asociados.</p>
+                    <a href="{% url 'app_productos:crear_producto' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Agregar Producto
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

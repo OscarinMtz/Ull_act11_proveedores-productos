@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ producto.nombre }} | Sistema Productos{% endblock %}
+
+{% block contenido %}
+<div class="row g-4">
+    <!-- Imagen y Información Principal -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" class="img-fluid rounded mb-4" style="max-height: 300px; object-fit: cover;" alt="{{ producto.nombre }}">
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-light rounded mb-4" style="height: 300px;">
+                        <i class="bi bi-image" style="font-size: 5rem; color: #6c757d;"></i>
+                    </div>
+                {% endif %}
+                
+                <h2 class="card-title">{{ producto.nombre }}</h2>
+                
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    <span class="badge bg-success fs-5">${{ producto.precio }}</span>
+                    {% if producto.stock > 10 %}
+                        <span class="badge bg-primary fs-5">Stock: {{ producto.stock }}</span>
+                    {% elif producto.stock > 0 %}
+                        <span class="badge bg-warning text-dark fs-5">Stock: {{ producto.stock }}</span>
+                    {% else %}
+                        <span class="badge bg-danger fs-5">Sin Stock</span>
+                    {% endif %}
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'app_productos:editar_producto' producto.id %}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Editar Producto
+                    </a>
+                    <a href="{% url 'app_productos:borrar_producto' producto.id %}" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar Producto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Detallada -->
+    <div class="col-lg-6">
+        <!-- Descripción -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-card-text"></i> Descripción del Producto
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ producto.descripcion|linebreaks }}</p>
+            </div>
+        </div>
+
+        <!-- Información del Proveedor -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-truck"></i> Información del Proveedor
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    {% if producto.proveedor.logo %}
+                        <img src="{{ producto.proveedor.logo.url }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Logo de {{ producto.proveedor.nombre }}">
+                    {% else %}
+                        <div class="rounded-circle me-3 d-flex align-items-center justify-content-center bg-light" style="width: 50px; height: 50px;">
+                            <i class="bi bi-building" style="color: #6c757d;"></i>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <h6 class="mb-0">{{ producto.proveedor.nombre }}</h6>
+                        <small class="text-muted">
+                            <i class="bi bi-telephone"></i> {{ producto.proveedor.telefono }}
+                        </small>
+                    </div>
+                </div>
+                <p class="mb-2">
+                    <i class="bi bi-envelope"></i> {{ producto.proveedor.correo }}
+                </p>
+                <p class="mb-0 small text-muted">
+                    <i class="bi bi-geo-alt"></i> {{ producto.proveedor.direccion|truncatewords:10 }}
+                </p>
+                <a href="{% url 'app_productos:detalle_proveedor' producto.proveedor.id %}" class="btn btn-sm btn-outline-primary mt-2">
+                    Ver Proveedor
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navegación -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-dark bg-opacity-25 text-white border-0">
+            <div class="card-body text-center">
+                <div class="btn-group" role="group">
+                    <a href="{% url 'app_productos:listar_productos' %}" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> Volver a Productos
+                    </a>
+                    <a href="{% url 'app_productos:crear_producto' %}" class="btn btn-outline-light">
+                        <i class="bi bi-plus-circle"></i> Nuevo Producto
+                    </a>
+                    <a href="{% url 'app_productos:listar_proveedores' %}" class="btn btn-outline-light">
+                        <i class="bi bi-truck"></i> Ver Proveedores
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

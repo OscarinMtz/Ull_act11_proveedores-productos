@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block titulo %}Confirmar Eliminación | Sistema Productos{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white text-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación
+                </h4>
+            </div>
+            <div class="card-body text-center py-4">
+                <div class="mb-4">
+                    <i class="bi bi-trash" style="font-size: 4rem; color: #dc3545;"></i>
+                </div>
+                
+                <h5 class="text-danger mb-3">¿Estás seguro de que quieres eliminar?</h5>
+                
+                <div class="alert alert-warning mb-4">
+                    <h6 class="alert-heading">{{ objeto.nombre }}</h6>
+                    {% if tipo == 'producto' %}
+                        <p class="mb-0">Precio: ${{ objeto.precio }} | Stock: {{ objeto.stock }}</p>
+                    {% elif tipo == 'proveedor' %}
+                        <p class="mb-0">Teléfono: {{ objeto.telefono }} | Productos: {{ objeto.productos.count }}</p>
+                    {% endif %}
+                </div>
+
+                <p class="text-muted mb-4">
+                    <i class="bi bi-info-circle"></i> 
+                    Esta acción no se puede deshacer y se perderán todos los datos asociados.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash"></i> Sí, Eliminar
+                        </button>
+                        {% if tipo == 'producto' %}
+                            <a href="{% url 'app_productos:detalle_producto' objeto.id %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                        {% elif tipo == 'proveedor' %}
+                            <a href="{% url 'app_productos:detalle_proveedor' objeto.id %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
